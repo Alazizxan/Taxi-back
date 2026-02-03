@@ -8,12 +8,14 @@ import { User, UserSchema } from '../users/schemas/user.schema';
 import { Driver, DriverSchema } from '../drivers/schemas/driver.schema';
 import { PricingService } from '../pricing/pricing.service';
 import { Vehicle, VehicleSchema } from '../vehicles/schemas/vehicle.schema';
+import { NotificationModule } from '../notifications/notification.module';
 
 
 
 
 @Module({
   imports: [
+    NotificationModule,
     MongooseModule.forFeature([
       { name: Order.name, schema: OrderSchema },
       { name: User.name, schema: UserSchema },
