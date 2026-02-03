@@ -1,98 +1,282 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🚕 LOCAL TAXI PLATFORM
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Telegram Bot & Driver App – FULL FLOW DOCUMENTATION
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Bu hujjat **backend + Telegram bot + Driver mobile app** uchun yagona manba hisoblanadi.
+Frontend (bot/app) ishlab chiquvchi shu faylga qarab **muammosiz** integratsiya qiladi.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🤖 TELEGRAM BOT FLOW (USER)
+> Telegram user **passwordsiz** ishlaydi. Identifikatsiya `telegramId` orqali.
 
-## Project setup
+### 1️⃣ /start
+**Maqsad:** User’ni ro‘yxatdan o‘tkazish yoki login qilish
 
-```bash
-$ pnpm install
+**API:**
+```
+POST /auth/telegram
 ```
 
-## Compile and run the project
-
-```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+**Body:**
+```json
+{
+  "telegramId": 123456789,
+  "name": "Ali",
+  "phone": "+998901234567"
+}
 ```
 
-## Run tests
-
-```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+**Response:**
+```json
+{
+  "token": "JWT_TOKEN"
+}
 ```
 
-## Deployment
+> Bot JWT tokenni session/memory’da saqlaydi va keyingi barcha so‘rovlarda yuboradi.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+---
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 2️⃣ User location olish
+Bot `request_location` tugmasini chiqaradi.
 
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+**API:**
+```
+PATCH /users/location
+Authorization: Bearer JWT
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+**Body:**
+```json
+{
+  "lng": 69.2401,
+  "lat": 41.2995
+}
+```
 
-## Resources
+> ⚠️ Location **har bir yangi buyurtmada yangilanadi** (eski ustiga yoziladi).
 
-Check out a few resources that may come in handy when working with NestJS:
+---
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### 3️⃣ Manzil kiritish
+Bot userdan matn sifatida manzilni so‘raydi.
 
-## Support
+Misol:
+```
+Chorsu bozori
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+### 4️⃣ Taxi chaqirish
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+**API:**
+```
+POST /orders/taxi
+Authorization: Bearer JWT
+```
 
-## License
+**Body:**
+```json
+{
+  "destinationText": "Chorsu bozori",
+  "distanceKm": 5.6
+}
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+> `distanceKm` bot tomonidan **Google Maps / Yandex API** orqali hisoblanadi.
+
+**Response:**
+```json
+{
+  "orderId": "65fa1c9b...",
+  "status": "requested",
+  "estimatedPrice": 15000,
+  "estimatedTimeMin": 7
+}
+```
+
+---
+
+### 5️⃣ Kutish (polling)
+Bot har 5–10 soniyada order holatini tekshiradi.
+
+**API:**
+```
+GET /orders/{orderId}
+Authorization: Bearer JWT
+```
+
+Agar driver topilsa:
+```json
+{
+  "status": "accepted",
+  "driver": {
+    "name": "Driver 1",
+    "phone": "+998911111111"
+  },
+  "vehicle": {
+    "model": "Cobalt",
+    "color": "White",
+    "plateNumber": "01A123AA"
+  }
+}
+```
+
+Bot userga xabar beradi:
+```
+🚕 Taxi yo‘lda
+⏱ 7 daqiqada yetib keladi
+🚘 Oq Cobalt – 01A123AA
+```
+
+---
+
+### 6️⃣ Safar tugashi
+Bot faqat natijani ko‘rsatadi:
+```
+Safar yakunlandi
+💰 Narx: 18 000 so‘m
+```
+
+---
+
+## 📱 DRIVER APP FLOW
+> Driver **password bilan** login qiladi. App real vaqt rejimida ishlaydi.
+
+### 1️⃣ Login
+```
+POST /auth/driver/login
+```
+
+**Body:**
+```json
+{
+  "phone": "+998911111111",
+  "password": "123456"
+}
+```
+
+---
+
+### 2️⃣ Online (heartbeat)
+Driver app ochilganda va keyin har 15–20 soniyada yuboriladi.
+
+```
+POST /drivers/heartbeat
+Authorization: Bearer JWT
+```
+
+> Agar heartbeat kelmasa → backend driver’ni **offline** qiladi (cron orqali).
+
+---
+
+### 3️⃣ Driver location update
+Har 5–10 soniyada.
+
+```
+PATCH /drivers/location
+Authorization: Bearer JWT
+```
+
+```json
+{
+  "lng": 69.2405,
+  "lat": 41.3001
+}
+```
+
+> Shu ma’lumot orqali **real masofa** hisoblanadi.
+
+---
+
+### 4️⃣ Aktiv zakazni olish
+
+```
+GET /drivers/orders/active
+Authorization: Bearer JWT
+```
+
+Agar zakaz bo‘lsa:
+```json
+{
+  "orderId": "65fa1c9b...",
+  "pickupLocation": { "coordinates": [69.24, 41.29] },
+  "estimatedPrice": 15000
+}
+```
+
+---
+
+### 5️⃣ Accept
+
+```
+PATCH /drivers/orders/{id}/accept
+```
+
+> 15 soniya ichida accept qilinmasa → **auto-reject**.
+
+---
+
+### 6️⃣ Arrived
+
+```
+PATCH /drivers/orders/{id}/arrived
+```
+
+> Agar kutish bo‘lsa, shu paytdan `waiting` hisoblanadi.
+
+---
+
+### 7️⃣ Started
+
+```
+PATCH /drivers/orders/{id}/started
+```
+
+> Shu paytdan real masofa hisoblanadi (`actualDistanceKm`).
+
+---
+
+### 8️⃣ Finished
+
+```
+PATCH /drivers/orders/{id}/finished
+```
+
+Backend bajaradi:
+- real masofa hisoblash
+- final price chiqarish
+- komissiyani wallet’dan yechish
+- wallet 0 bo‘lsa → driver OFFLINE
+
+**Response:**
+```json
+{
+  "finalDistanceKm": 6.1,
+  "finalPrice": 18300,
+  "commission": 1830
+}
+```
+
+---
+
+## 🔐 ASOSIY QOIDALAR
+
+- Telegram user → **password YO‘Q**
+- Driver → **password BOR**
+- Location → har safar yangilanadi
+- Wallet 0 → driver online bo‘la olmaydi
+- Masofa → driver location stream orqali hisoblanadi
+
+---
+
+## ✅ XULOSA
+
+Bu hujjat bilan:
+- 🤖 Telegram bot yoziladi
+- 📱 Driver app yoziladi
+- ⚙️ Backend bilan chalkashlik bo‘lmaydi
+- 🚀 Production-ready MVP tayyor
+
