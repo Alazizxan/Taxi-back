@@ -111,8 +111,8 @@ export class DriversService {
     if (String(order.driverId) !== String(driverId))
       throw new BadRequestException('Not your order');
 
-    if (order.status !== 'accepted')
-      throw new BadRequestException('Order not accepted');
+    if (!['accepted', 'arrived'].includes(order.status))
+      throw new BadRequestException('Order cannot be started');
 
     order.status = 'started';
 
@@ -126,7 +126,6 @@ export class DriversService {
       ],
     };
 
-
     await order.save();
 
     await this.notificationService.create({
@@ -137,8 +136,10 @@ export class DriversService {
         orderId: order._id.toString(),
       },
     });
+
     return order;
   }
+
 
 
   async finished(driverId: string, orderId: string) {
