@@ -246,7 +246,7 @@ export class OrdersService {
 
         await this.assignNextDriver(orderId);
       }
-    }, 15_000);
+    }, 50_000);
 
     return order;
   }
